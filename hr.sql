@@ -207,3 +207,78 @@ FROM
     employees
 WHERE
     commission_pct IS NOT NULL;
+    
+--FIRST_NAME 이 CURTIS 인 사람의 FIRST_NAME, LAST_NAME, EMAIL, PHONE_NUMBER, JOB_ID를 조회한다.
+--단, JOB_ID 의 결과는 소문자로 출력되도록 한다.
+SELECT
+    first_name,
+    last_name,
+    email,
+    phone_number,
+    lower(job_id)
+FROM
+    employees
+WHERE
+    first_name = 'CURTIS';
+--부서번호가 60,70,80,90인 사원들의 EMPLOYEE_ID, FIRST_NAME, HIRE_DATE, JOB_ID 조회
+--단, JOB_ID가 IT_PROG 인 사원의 경우 프로그래머로 변경한 후 출력
+
+SELECT
+    employee_id,
+    first_name,
+    hire_date,
+    replace(job_id, 'IT_PROG', '프로그래머')
+FROM
+    employees
+WHERE
+    department_id IN ( 60, 70, 80, 90 );
+--JOB_ID 가 AD_PRES, PU_CLERK 인 사원들의 EMPLOYEE_ID,FIRST_NAME, LAST_NAME, DEPARTMENT_ID, JOB_ID를 조회한다.
+--단, 사원명은 FIRST_NAME 과LAST_NAME을 연결하여 출력하시오
+
+SELECT
+    employee_id,
+    concat(first_name,
+           concat(' ', last_name)),
+    department_id,
+    job_id
+FROM
+    employees
+WHERE
+    job_id IN ( 'AD_PRES', 'PU_CLERK' );
+    
+--실습
+
+SELECT
+    last_name,
+    salary,
+    decode(trunc(salary / 2000, 0),
+           0,
+           0.00,
+           1,
+           0.09,
+           2,
+           0.20,
+           3,
+           0.30,
+           4,
+           0.40,
+           5,
+           0.42,
+           6,
+           0.44,
+           0.45) AS tax_rate
+FROM
+    employees
+WHERE
+    department_id = 80;
+    
+--회사 내의 최대 연봉 및 최소 연봉의 차이를 출력
+SELECT
+    MAX(salary) - MIN(salary) AS sal_gap
+FROM
+    employees;
+--매니저로 근무하는 사원들의 총 숫자 출력(매니저 중복 제거)
+SELECT
+    COUNT(DISTINCT manager_id)
+FROM
+    employees;
