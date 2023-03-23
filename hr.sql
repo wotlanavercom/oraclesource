@@ -387,30 +387,32 @@ WHERE
     AND e1.salary < e2.salary;
     
 --서브쿼리
---LAST_NAME 에 u가 포함된 사원들과 동일 부서에 근무하는 사원들의 사번 , last_name 조회
+--1 LAST_NAME 에 u가 포함된 사원들과 동일 부서에 근무하는 사원들의 사번 , last_name 조회                
 SELECT employee_id, last_name 
-FROM employees 
-WHERE last_name LIKE '%u%' ALL (SELECT * FROM employees WHERE department_id);
+FROM employees e1
+WHERE e1.department_id IN (SELECT DISTINCT  department_id FROM employees WHERE last_name LIKE '%u%') ORDER BY e1.employee_id;
 
---job_id 가 SA_MAN 인 사원들의 최대 연봉보다 높게 받는 사원들의 last_name, job_id, salary 조회
-SELECT last_name, job_id, salary 
-FROM employees 
-WHERE job_id = 'SA_MAN' < (SELECT MAX(salary) FROM employees GROUP BY; 
+--2 job_id 가 SA_MAN 인 사원들의 최대 연봉보다 높게 받는 사원들의 last_name, job_id, salary 조회         
+SELECT last_name, job_id, salary FROM employees 
+WHERE salary > (SELECT MAX(salary) FROM employees WHERE job_id = 'SA_MAN'); 
 
---커미션을 버는 사원들의 부서와 연봉이 동일한 사원들의 last_name, department_id, salary 조회
+--3 커미션을 버는 사원들의 부서와 연봉이 동일한 사원들의 last_name, department_id, salary 조회
 SELECT last_name, department_id, salary 
 FROM employees 
-WHERE commission_pct IS NOT NULL = (SELECT last_name, department_id, salary  FROM employees WHERE ;
+WHERE (department_id, salary) 
+IN (SELECT department_id, salary
+FROM employees WHERE commission_pct > 0);
 
---회사 전체 평균 연봉보다 더 받는 사원들 중 last_name에 u가 있는 사원들의 근무하는 부서에서 
+--4회사 전체 평균 연봉보다 더 받는 사원들 중 last_name에 u가 있는 사원들의 근무하는 부서에서 
 --근무하는 사원들의 employee_id, last_name, salary 조회
 SELECT employee_id, last_name, salary 
-FROM
+FROM ( SELECT DISTINCT department_id FROM employees WHERE salary > (SELECT ROUND (AVG(salary),0) FROM employees) AND last_name LIKE '%U%') dept,employees e
+WHERE e.department_id = dept.department_id ORDER BY employee_id;
 
---last_name 이 Davies 인 사람보다 나중에 고용된 사원들의 last_name,hire_date 조회
-SELECT last_name, hire_date 
-FORM
+--5last_name 이 Davies 인 사람보다 나중에 고용된 사원들의 last_name,hire_date 조회             x
+SELECT last_name, hire_date FORM employees WHERE hire_date >
+(SELECT hire_date FROM employees WHERE last_name = 'Davies') ORDER BY hire_date;
 
---last_name 이 King 인 사원을 매니저로 두고 있는 모든 사원들의 last_name, salary 조회
-SELECT last_name, salary 
-FROM
+--6last_name 이 King 인 사원을 매니저로 두고 있는 모든 사원들의 last_name, salary 조회
+SELECT last_name, salary FROM employees
+WHERE manager_id IN (SELECT employee_id FROM employees WHERE last_name = 'King');

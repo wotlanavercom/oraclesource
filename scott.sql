@@ -1617,7 +1617,7 @@ WHERE E.DEPTNO = 20 AND E.SAL <= (SELECT AVG(SAL) FROM EMP );
 --IN, ANY(SOME), ALL, EXISTS 연산자 허용(단일행 서브쿼리에 쓰는 연산자 사용 불가)
 
 --각 부서별 최고 급여와 동일한 급여를 받는 사원정보 조회
-SELECT MAX(SAL) FROM EMP GROUP BY DEPTNO;
+SELECT deptno, MAX(SAL) FROM EMP GROUP BY DEPTNO;
 
 --ORA-01427: 단일 행 하위 질의에 2개 이상의 행이 리턴되었습니다.
 --SELECT * FROM EMP WHERE SAL = (SELECT MAX(SAL) FROM EMP GROUP BY DEPTNO);
@@ -1866,3 +1866,94 @@ WHERE
     )
 ORDER BY
     e.empno;
+    
+--DML(Date Manipulation Language) : 데이터 추가(INSERT), 수정(PUDATE), 삭제(DELETE)하는 데이터 조작어
+--COMMIT : DML 작업을 데이터 베이스에 최종 반영
+--ROLLBACK : DML 작업을 취소
+--SELECT + DML ==> 자주 사용하는 sql 임
+
+--연습용 테이블 생성
+CREATE TABLE dept_temp AS SELECT * FROM dept;
+
+DROP TABLE dept_temp; --제거
+
+--열이름은 선택사항임
+--insert into 테이블이름(열이름1,열이름2.....)
+--values(데이터1, 데이터2.....);
+
+--dept_temp 새로운 부서 추가하기
+INSERT INTO dept_temp(deptno,dname, loc)   --(deptno,dname, loc) : 열이름
+VALUES(50,'DATABASE','SEOUL');
+
+SELECT * FROM dept_temp;
+
+--열 이름 제거할 때
+INSERT INTO dept_temp
+VALUES(60,'NETWORK','BUSAN');
+
+--INSERT 시 오류
+
+--이 열에 대해 지정된 전체 자릿수보다 큰 값이 허용됩니다.
+--INSERT INTO dept_temp
+--VALUES(600,'NETWORK','BUSAN');
+
+--수치가 부적합합니다
+--INSERT INTO dept_temp
+--VALUES('NO','NETWORK','BUSAN');
+
+--값의 수가 충분하지 않습니다
+--INSERT INTO dept_temp(deptno,dname, loc)   
+--VALUES(70,'DATABASE');
+
+--NULL 삽입
+INSERT INTO dept_temp(deptno,dname, loc)   
+VALUES(80,'WEB','NULL');
+
+INSERT INTO dept_temp(deptno,dname, loc)  
+VALUES(70,'MOBILE','');
+
+--NULL 삽입할 컬럼명 지정하지 않았음
+--삽입시 전체 컬럼을 삽입하지 않는다면 필드명 필수
+INSERT INTO dept_temp(deptno,loc)   
+VALUES(91,'INCHON');
+
+SELECT * FROM dept_temp;
+
+-- emp_temp 생성(emp 테이블 복사 - 데이터는 복사를 하지 않을 때)
+CREATE TABLE emp_temp AS SELECT * FROM emp WHERE 1 <> 1;
+
+INSERT INTO emp_temp(empno, ename, job, mgr, hiredate, sal, comm, deptno)
+VALUES(9999,'홍길동', 'PRESIDENT', NULL, '2001/01/01', 5000, 1000, 10);
+
+INSERT INTO emp_temp(empno, ename, job, mgr, hiredate, sal, comm, deptno)
+VALUES(1111,'성춘향', 'MANAGER', 9999, '2002-01-05', 4000, NULL, 20);
+
+--날짜 입력 시 년/월/일 순서 => 일/월/년 삽입
+--날짜 형식의 지정에 불필요한 데이터가 포함되어 있습니다
+INSERT INTO emp_temp(empno, ename, job, mgr, hiredate, sal, comm, deptno)
+VALUES(2222,'이순신', 'MANAGER', 9999, TO_DATE('07-01-2001','DD/MM/YYYY'), 4000, NULL, 20);
+
+INSERT INTO emp_temp(empno, ename, job, mgr, hiredate, sal, comm, deptno)
+VALUES(3333,'심봉사', 'MANAGER', 9999, SYSDATE, 4000, NULL, 30);
+
+--서브쿼리로 INSERT 구현
+--emp, salgrade 테이블을 조인 후 급여 등급이 1인 사원만 emp_temp 에 추가
+
+INSERT INTO emp_temp(empno, ename, job, mgr, hiredate, sal, comm, deptno)
+SELECT e.empno, e.ename, e.job, e.mgr, e.hiredate, e.sal, e.comm, e.deptno 
+FROM emp e, salgrade s 
+WHERE e.sal BETWEEN s.losal AND s.hisal AND s.grade =1;
+
+SELECT * FROM emp_temp;
+
+
+COMMIT;
+
+
+
+--UPDATE : 테이블에 있는 데이터 수정
+
+--UPDATE 테이블명
+--SET 변경할열이름 = 데이터, 변경할열이름 = 데이터.....
+--WHERE 변경을 위한 대상 행을 선별하기 위한 조건
+
