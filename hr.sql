@@ -357,7 +357,7 @@ GROUP BY
     d.location_id;
 
 --5EXECUTIVE 부서에 근무하는 사원들의 부서번호, LAST_NAME,JOIN_ID 조회
---EMPLOYEES, DEPARTMENTS INNER JOIN                                              X
+--EMPLOYEES, DEPARTMENTS INNER JOIN                                              
 
 SELECT     
     d.department_id,
@@ -367,8 +367,9 @@ FROM
     employees   e,
     departments d
 WHERE
-        e.department_id = D.department_id
-    AND d.department_name = 'EXECUTIVE';
+        e.department_id = d.department_id
+    AND d.department_name = 'Executive';
+    
 
 --6각 사원별 소속부서에서 자신보다 늦게 고용되었으나 보다 많은 연봉을 받는 
 SELECT DISTINCT
@@ -406,12 +407,15 @@ FROM employees WHERE commission_pct > 0);
 --4회사 전체 평균 연봉보다 더 받는 사원들 중 last_name에 u가 있는 사원들의 근무하는 부서에서 
 --근무하는 사원들의 employee_id, last_name, salary 조회
 SELECT employee_id, last_name, salary 
-FROM ( SELECT DISTINCT department_id FROM employees WHERE salary > (SELECT ROUND (AVG(salary),0) FROM employees) AND last_name LIKE '%U%') dept,employees e
+FROM ( SELECT DISTINCT department_id FROM employees 
+WHERE salary > (SELECT ROUND (AVG(salary),0) FROM employees) AND last_name LIKE '%U%') dept,employees e
 WHERE e.department_id = dept.department_id ORDER BY employee_id;
 
---5last_name 이 Davies 인 사람보다 나중에 고용된 사원들의 last_name,hire_date 조회             x
-SELECT last_name, hire_date FORM employees WHERE hire_date >
-(SELECT hire_date FROM employees WHERE last_name = 'Davies') ORDER BY hire_date;
+--5last_name 이 Davies 인 사람보다 나중에 고용된 사원들의 last_name,hire_date 조회             
+SELECT last_name, hire_date 
+FROM employees 
+WHERE hire_date > ( SELECT hire_date FROM employees WHERE last_name = 'Davies') ORDER BY hire_date;
+
 
 --6last_name 이 King 인 사원을 매니저로 두고 있는 모든 사원들의 last_name, salary 조회
 SELECT last_name, salary FROM employees
