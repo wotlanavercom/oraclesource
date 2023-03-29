@@ -206,7 +206,7 @@ BEGIN
     END LOOP;
 END;
 /
---1~10까지 홀수만 출력
+--1~10까지 홀수만 출력 
 BEGIN  
     FOR i IN 1..10 LOOP
     CONTINUE WHEN MOD(i,2) =0;
@@ -222,3 +222,5 @@ BEGIN
     END LOOP;
 END;
 /
+
+commit;
