@@ -171,3 +171,22 @@ alter table booktbl add description nvarchar2(100);
 
 --열삭제
 alter table booktbl drop column desctiption;
+
+
+
+--member 테이블 (membertbl)
+--userid(영어,숫자,특수문자) 최대 12 허용, pk
+--password (영어,숫자,특수문자) 최대 15 허용
+--name (한글)
+--gender (한글-남 or 여)
+--email
+
+CREATE TABLE membertbl(
+    userid nvarchar2(15) primary key,
+    password nvarchar2(20) not null,
+    name nvarchar2(10) not null,
+    gender nvarchar2(2) not null,
+    email nvarchar2(50) not null
+    );
+insert into membertbl values('hong123','hong123@','홍길동','남','hong123@gmail.com');
+commit;
