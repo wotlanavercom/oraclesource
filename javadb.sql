@@ -222,3 +222,90 @@ insert into board(bno,name,password,title,content,re_ref,re_lev,re_seq)
 
 commit;
 
+--댓글
+--re_ref, re_lev, re_seq
+
+--원본글 작성 re_ref : bno 값과 동일
+--          re_lev : 0, re_seq : 0
+
+select bno, title, re_ref, re_lev, re_seq from board where bno=1281;
+
+--re_ref : 그룹번호, re_seq : 그룹 내에서 댓글의 순서, 
+--re_lev : 그룹내에서 댓글의 깊이(원본글의 댓글인지? 댓글의 댓글인지?)
+
+--댓글도 새글임 => insert 작업
+--              bno : board_seq.nextval
+--              re_ref : 원본글의 re_ref 값과 동일
+--              re_seq : 원본글의 re_seq + 1
+--              re_lev : 원본글의 re_lev + 1
+
+--첫번째 댓글 작성
+insert into board(bno,name,password,title,content,attach,re_ref,re_lev,re_seq)
+values(board_seq.nextval,'김댓글','12345','Re : 게시글','게시글 댓글',null,1281,1,1);
+
+commit;
+
+--가장 최신글과 댓글 가지고 오기(+re_seq asc : 댓글의 최신
+select bno, title, re_ref, re_lev, re_seq from board where re_ref=1281 order by re_seq;
+
+--두번째 댓글 작성
+--re_seq 가 값이 작을수록 최신글임
+
+--기존 댓글이 있는가? 기존 댓글의 re_seq 변경을  한 후 insert 작업 해야 함
+
+--update 구문에서 where 절은 re_ref 는 원본글의 re_ref 값, re_seq 비교구문은 원본글의 re_seq 값과 비교
+
+update board set re_seq = re_seq + 1 where re_ref = 1281 and re_seq > 0;
+
+commit;
+
+insert into board(bno,name,password,title,content,attach,re_ref,re_lev,re_seq)
+values(board_seq.nextval,'김댓글','12345','Re : 게시글2','게시글 댓글2',null,1281,1,1);
+
+--댓글의 댓글 작성
+--update / insert
+update board set re_seq = re_seq + 1 where re_ref = 1281 and re_seq > 2;
+
+insert into board(bno,name,password,title,content,attach,re_ref,re_lev,re_seq)
+values(board_seq.nextval,'김댓글','12345','ReRe : 게시글','댓글의 댓글',null,1281,2,3);
+
+--페이지 나누기
+--rownum : 조회된 결과애 번호를 매겨줌
+--         order by 구문에 index 가 들어가지 않는다면 제대로 된 결과를 보장하지 않음
+--         pk 가 index로 사용됨
+select rownum, bno, title from board order by bno desc;
+
+select rownum, bno, title, re_ref, re_lev, re_seq 
+from board order by re_ref desc, re_seq asc;
+
+--해결
+--roder by 구문을 먼저 실행한 후 rownum 붙여야 함
+select rownum, bno, title, re_ref, re_lev, re_seq
+from(select bno, title, re_ref, re_lev, re_seq 
+    from board order by re_ref desc, re_seq asc)
+where rownum <= 30;
+
+--한 페이지에 30개의 목록을 보여준다 할 때
+-- 1 2 3 4 5 6 .......
+--1page 요청 (1 ~ 30)
+--2page 요청 (31 ~ 60)
+
+select * 
+from(select rownum rnum, bno, title, re_ref, re_lev, re_seq
+    from(select bno, title, re_ref, re_lev, re_seq 
+        from board order by re_ref desc, re_seq asc)
+    where rownum <= 60)
+where rnum > 30;
+
+-- 1page : rnum > 0, rownum <= 30
+-- 2page : rnum > 30, rownum <= 60
+-- 3page : rnum > 60, rownum <= 90
+
+--1,2,3
+--rownum 값 : 페이지번호 * 한 페이지에 보여줄 목록 개수
+--rnum 값 : (페이지번호-1) * 한 페이지에 보여줄 목록 개수
+
+
+
+
+
