@@ -216,3 +216,9 @@ create table board (
 --시퀀스 생성 board_seq
 create sequence board_seq;
 
+--서브쿼리
+insert into board(bno,name,password,title,content,re_ref,re_lev,re_seq)
+(select board_seq.nextval,name,password,title,content,board_seq.currval,re_lev,re_seq from board);
+
+commit;
+
