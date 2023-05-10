@@ -305,7 +305,32 @@ where rnum > 30;
 --rownum 값 : 페이지번호 * 한 페이지에 보여줄 목록 개수
 --rnum 값 : (페이지번호-1) * 한 페이지에 보여줄 목록 개수
 
+commit;
+
+select count(*) from board;
+
+select count(*) from board where title like '%오늘%';
 
 
 
+-------spring_board
+-- bno 숫자(10) 제약 조건 pk 제약조건명 pk_spring_board
+-- title varchar2(200) 제약조건 not null
+-- content varchar2(2000) 제약조건 not null
+-- writer varchar2(50) 제약조건 not null
+-- regdate date default 로 현재시스템날짜
+-- updatedate date default 로 현재시스템날짜
 
+create table spring_board (
+    bno number(10) CONSTRAINT pk_spring_board primary key,    
+    title varchar2(200) not null,
+    content varchar2(2000) not null,
+    writer varchar2(50) not null,    
+    regdate date default sysdate,
+    updatedate date default sysdate
+    );
+
+--시퀀스 seq_board
+create sequence seq_board;
+
+commit;
