@@ -334,3 +334,14 @@ create table spring_board (
 create sequence seq_board;
 
 commit;
+
+--mybatis 연습용 테이블
+create table person(
+    id varchar2(20) primary key,
+    name varchar2(30) not null);
+    
+select * from person;
+
+insert into person values('kim124','이길동');
+
+commit;
