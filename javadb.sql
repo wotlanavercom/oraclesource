@@ -345,3 +345,18 @@ select * from person;
 insert into person values('kim124','이길동');
 
 commit;
+
+
+--트랜잭션 테스트 테이블
+--트랜잭션 : 하나의 업무에 여러개의 작은 업무들이 같이 묶여 있음 / 하나의 단위로 처리
+--계좌이체 : 계좌 출금 => 타 계좌 입금
+
+create table tbl_sample1(col1 varchar2(500));
+create table tbl_sample2(col1 varchar2(50));
+
+select * from tbl_sample1;
+select * from tbl_sample2;
+
+delete tbl_sample1;
+
+
