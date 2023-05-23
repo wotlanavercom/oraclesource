@@ -392,11 +392,22 @@ where rn > 0;
 commit;
 
 
+--댓글 테이블
+create table spring_reply(
+    rno number(10,0) constraint pk_reply primary key,  -- 댓글 글번호
+    bno number(10,0) not null,                         -- 원본글 글본호
+    reply varchar2(1000) not null,                     -- 댓글 내용
+    replyer varchar2(50) not null,                     -- 댓글 작성자
+    replydate date default sysdate,                    --댓글 작성날짜
+    constraint fk_reply_board foreign key(bno) references spring_board(bno) -- 외래키
+);
 
+create sequence seq_reply;
 
+insert into spring_reply(rno, bno, reply, replyer)
+values(seq_reply.nextval,1060,'게시글 댓글 답니다.','test1');
 
-
-
+commit;
 
 
 
