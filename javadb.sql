@@ -402,12 +402,36 @@ create table spring_reply(
     constraint fk_reply_board foreign key(bno) references spring_board(bno) -- 외래키
 );
 
+--댓글 테이블 수정(컬럼 추가) updatedate
+alter table spring_reply add updatedate date default sysdate;
+
 create sequence seq_reply;
 
 insert into spring_reply(rno, bno, reply, replyer)
 values(seq_reply.nextval,1060,'게시글 댓글 답니다.','test1');
 
 commit;
+
+-- spring_reply 인덱스 추가 설정
+create index idx_reply on spring_reply(bno desc,rno asc);
+
+
+select rno, bno, reply, replyer, replydate, updatedate
+from (select /*+INDEX(spring_reply idx_reply)*/ rownum rn, rno, bno, reply, replyer, replydate, updatedate
+    from spring_reply
+    where bno=1060 and rownum <= 10)
+where rn > 0;
+
+
+
+
+
+
+
+
+
+
+
 
 
 
