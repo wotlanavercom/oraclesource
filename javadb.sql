@@ -264,7 +264,9 @@ values(board_seq.nextval,'김댓글','12345','Re : 게시글2','게시글 댓글
 
 --댓글의 댓글 작성
 --update / insert
+--글 2배 복사 코드
 update board set re_seq = re_seq + 1 where re_ref = 1281 and re_seq > 2;
+
 
 insert into board(bno,name,password,title,content,attach,re_ref,re_lev,re_seq)
 values(board_seq.nextval,'김댓글','12345','ReRe : 게시글','댓글의 댓글',null,1281,2,3);
@@ -422,7 +424,16 @@ from (select /*+INDEX(spring_reply idx_reply)*/ rownum rn, rno, bno, reply, repl
     where bno=1060 and rownum <= 10)
 where rn > 0;
 
+--spring_board 에 컬럼 추가(댓글 수 저장)
+alter table spring_board add replycnt number default 0;
 
+--이미 들어간 댓글 수 삽입
+update spring_board
+set replycnt = (select count(rno) from spring_reply where spring_board.bno = spring_reply.bno);
+
+select * from spring_board where bno = 1060;
+
+commit;
 
 
 
