@@ -436,7 +436,17 @@ select * from spring_board where bno = 1060;
 commit;
 
 
-
+-- 파일첨부
+-- spring_attach
+-- uuid, uploadpath, filename, filetype
+create table spring_attach(
+    uuid varchar2(100) constraint pk_attach primary key,
+    uploadpath varchar2(200) not null,
+    filename varchar2(100) not null,
+    filetype char(1) default '1',
+    bno number(10,0) not null, 
+    constraint fk_board_attach foreign key(bno) references spring_board(bno)
+)
 
 
 
