@@ -446,7 +446,7 @@ create table spring_attach(
     filetype char(1) default '1',
     bno number(10,0) not null, 
     constraint fk_board_attach foreign key(bno) references spring_board(bno)
-)
+);
 
 
 
